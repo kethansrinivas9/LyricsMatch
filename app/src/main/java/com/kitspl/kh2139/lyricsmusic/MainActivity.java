@@ -2,6 +2,7 @@ package com.kitspl.kh2139.lyricsmusic;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
@@ -9,6 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,14 +28,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = (ListView)findViewById(R.id.playList);
-        ArrayList<File> mySongs = findSongs(Environment.getExternalStorageDirectory());
-        String[] songNames = new String[ mySongs.size() ];
-        for(int i=0;i<mySongs.size();i++){
+        final ArrayList<File> mySongs = findSongs(Environment.getExternalStorageDirectory());
+        final String[] songNames = new String[ mySongs.size() ];
+        for(int i=0;i<mySongs.size();i++) {
             //toast(mySongs.get(i).getName());
-            songNames[i] = mySongs.get(i).getName().replace(".mp3","");
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1,songNames);
-            lv.setAdapter(arrayAdapter);
+            songNames[i] = mySongs.get(i).getName().replace(".mp3", "").replace(".wav", "");
         }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.song_layout,R.id.songName,songNames);
+            lv.setAdapter(arrayAdapter);
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    startActivity(new Intent(getApplicationContext(),MusicPlayer.class).putExtra("pos",position).putExtra("songlist",mySongs)) ;
+                }
+            });
     }
 
     public void requestPermissions(){
