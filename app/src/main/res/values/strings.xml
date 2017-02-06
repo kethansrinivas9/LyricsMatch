@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LyricsMusic</string>
+    <string name="play">play</string>
+    <string name="fastForward">fastf</string>
+    <string name="fastBackward">fastb</string>
+    <string name="nextSong">nexts</string>
+    <string name="prevSong">prevs</string>
 </resources>
