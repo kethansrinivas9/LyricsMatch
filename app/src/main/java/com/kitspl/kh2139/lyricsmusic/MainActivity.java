@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ListView lv;
+    MediaPlayer mediaPlayer;
     private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         final String[] songNames = new String[ mySongs.size() ];
         for(int i=0;i<mySongs.size();i++) {
             //toast(mySongs.get(i).getName());
-            songNames[i] = mySongs.get(i).getName().replace(".mp3", "").replace(".wav", "");
+            songNames[i] = mySongs.get(i).getName().replace(".mp3", "");
         }
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.song_layout,R.id.songName,songNames);
             lv.setAdapter(arrayAdapter);
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     fileList.addAll(findSongs(singleFile));
             }
             else{
-                if(singleFile.getName().endsWith(".mp3") || singleFile.getName().endsWith(".wav"))
+                if(singleFile.getName().endsWith(".mp3"))
                     fileList.add(singleFile);
             }
         }

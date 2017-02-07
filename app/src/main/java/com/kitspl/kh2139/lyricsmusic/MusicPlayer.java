@@ -3,7 +3,6 @@ package com.kitspl.kh2139.lyricsmusic;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,12 +13,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
-    MediaPlayer mediaPlayer;
+    static MediaPlayer mediaPlayer;
     ArrayList<File> songNames;
     int position;
     SeekBar seekBar;
+    Thread updateSeekBar;
     Button playPause,fastBackward,fastForward,nextButton, prevButton;
-
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +37,29 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
 
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        updateSeekBar = new Thread(){
+            @Override
+            public void run() {
+                int totalDuration = mediaPlayer.getDuration();
+                int currentPosition = 0;
+                while (currentPosition<totalDuration){
+                    try{
+                        sleep(500);
+                        currentPosition = mediaPlayer.getCurrentPosition();
+                        seekBar.setProgress(currentPosition);
+                    }
+                    catch (InterruptedException e){
+                        e.printStackTrace();
+                    }
+                }
+                //super.run();
+            }
+        };
+        if(mediaPlayer!=null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -45,11 +68,25 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
 
         Uri uri = Uri.parse(songNames.get(position).toString());
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
-        if(mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-         mediaPlayer.start();
+        mediaPlayer.start();
+        updateSeekBar.start();
+        seekBar.setMax(mediaPlayer.getDuration());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+            }
+        });
     }
 
     @Override
@@ -57,10 +94,14 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         int option = view.getId();
         switch (option){
             case R.id.playPause:
-                if(mediaPlayer.isPlaying())
+                if(mediaPlayer.isPlaying()) {
+                    playPause.setBackgroundResource(R.drawable.ic_media_play);
                     mediaPlayer.pause();
-                else
+                }
+                else{
+                    playPause.setBackgroundResource(R.drawable.ic_media_pause);
                     mediaPlayer.start();
+                }
                 break;
             case R.id.fastForward:
                 mediaPlayer.seekTo(mediaPlayer.getCurrentPosition()+5000);
