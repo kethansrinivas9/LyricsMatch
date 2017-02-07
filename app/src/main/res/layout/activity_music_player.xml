@@ -10,68 +10,72 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kitspl.kh2139.lyricsmusic.MusicPlayer">
 
-    <SeekBar
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/seekBar"
-        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@+id/seekBar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="40dp" />
+        android:layout_alignParentRight="true"
+        >
 
     <Button
-        android:text="@string/prevSong"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/seekBar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/prevButton" />
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="24dp"
+        android:id="@+id/prevButton"
+        android:background="@android:drawable/ic_media_rew" />
     <Button
-        android:text="@string/fastBackward"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/seekBar"
         android:layout_toRightOf="@+id/prevButton"
         android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/fastBackward" />
+        android:layout_marginTop="24dp"
+        android:id="@+id/fastBackward"
+        android:background="@android:drawable/ic_media_previous" />
     <Button
-        android:text="@string/play"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/seekBar"
         android:layout_toRightOf="@+id/fastBackward"
         android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/playPause" />
+        android:layout_marginTop="24dp"
+        android:id="@+id/playPause"
+        android:background="@android:drawable/ic_media_pause" />
 
     <Button
-        android:text="@string/fastForward"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/seekBar"
         android:layout_toRightOf="@+id/playPause"
         android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/fastForward" />
+        android:layout_marginTop="24dp"
+        android:id="@+id/fastForward"
+        android:background="@android:drawable/ic_media_next" />
 
     <Button
-        android:text="@string/nextSong"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/seekBar"
         android:layout_toRightOf="@+id/fastForward"
         android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:id="@+id/nextButton" />
+        android:layout_marginTop="24dp"
+        android:id="@+id/nextButton"
+        android:background="@android:drawable/ic_media_ff" />
+    </LinearLayout>
 
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_marginBottom="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
