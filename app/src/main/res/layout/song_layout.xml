@@ -10,8 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/songName"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:textColor="@color/blackbackground"
         />
 </LinearLayout>
