@@ -37,27 +37,10 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
 
-        seekBar = (SeekBar)findViewById(R.id.seekBar);
-        updateSeekBar = new Thread(){
-            @Override
-            public void run() {
-                int totalDuration = mediaPlayer.getDuration();
-                int currentPosition = 0;
-                while (currentPosition<totalDuration){
-                    try{
-                        sleep(500);
-                        currentPosition = mediaPlayer.getCurrentPosition();
-                        seekBar.setProgress(currentPosition);
-                    }
-                    catch (InterruptedException e){
-                        e.printStackTrace();
-                    }
-                }
-                //super.run();
-            }
-        };
+        changeSeekBarPosition();
         if(mediaPlayer!=null){
             mediaPlayer.stop();
+            mediaPlayer.reset();
             mediaPlayer.release();
         }
 
@@ -129,5 +112,26 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.start();
                 break;
         }
+    }
+
+    public void changeSeekBarPosition(){
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        updateSeekBar = new Thread(){
+            @Override
+            public void run() {
+                int totalDuration = mediaPlayer.getDuration();
+                int currentPosition = 0;
+                while (currentPosition<totalDuration){
+                    try{
+                        sleep(500);
+                        currentPosition = mediaPlayer.getCurrentPosition();
+                        seekBar.setProgress(currentPosition);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 }
