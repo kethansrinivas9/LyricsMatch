@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
-
+import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
     static MediaPlayer mediaPlayer;
@@ -20,6 +21,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
     Thread updateSeekBar;
     Button playPause,fastBackward,fastForward,nextButton, prevButton;
     private static final String TAG = "MainActivity";
+    TextView currentTime,totalTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,8 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         fastForward = (Button)findViewById(R.id.fastForward);
         nextButton = (Button)findViewById(R.id.nextButton);
         prevButton = (Button)findViewById(R.id.prevButton);
+        currentTime = (TextView)findViewById(R.id.currentTime);
+        totalTime = (TextView)findViewById(R.id.totalTime);
 
         playPause.setOnClickListener(this);
         fastForward.setOnClickListener(this);
@@ -53,6 +57,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
         mediaPlayer.start();
         updateSeekBar.start();
+
         seekBar.setMax(mediaPlayer.getDuration());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -120,11 +125,13 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
             @Override
             public void run() {
                 int totalDuration = mediaPlayer.getDuration();
+                totalTime.setText(milliSecondsToTime(totalDuration));
                 int currentPosition = 0;
                 while (currentPosition<totalDuration){
                     try{
                         sleep(500);
                         currentPosition = mediaPlayer.getCurrentPosition();
+                        currentTime.setText(milliSecondsToTime(currentPosition));
                         seekBar.setProgress(currentPosition);
                     }
                     catch (Exception e){
@@ -133,5 +140,28 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 }
             }
         };
+    }
+
+    public String milliSecondsToTime(long milliseconds){
+        String finalTimerString = "";
+        String secondsString = "";
+
+        // Convert total duration into time
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+        // Add hours if there
+        if(hours > 0){
+            finalTimerString = hours + ":";
+        }
+
+        if(seconds < 10){
+            secondsString = "0" + seconds;
+        }else{
+            secondsString = "" + seconds;}
+
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+
+        return finalTimerString;
     }
 }
