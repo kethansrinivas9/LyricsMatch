@@ -9,13 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
     static MediaPlayer mediaPlayer;
-    ArrayList<File> songNames;
+    //ArrayList<File> songNames;
+    ArrayList<String> songNames;
     int position;
     SeekBar seekBar;
     Thread updateSeekBar;
@@ -53,7 +56,9 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         songNames = (ArrayList) bundle.getParcelableArrayList("songlist");
         position = bundle.getInt("pos",0);
 
-        Uri uri = Uri.parse(songNames.get(position).toString());
+        //Uri uri = Uri.parse("content:/"+songNames.get(position)+".mp3");
+        Toast.makeText(getApplicationContext(),songNames.get(position).toString(), Toast.LENGTH_SHORT).show();
+        Uri uri = Uri.parse(songNames.get(position));
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
         mediaPlayer.start();
         updateSeekBar.start();
@@ -145,8 +150,6 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
     public String milliSecondsToTime(long milliseconds){
         String finalTimerString = "";
         String secondsString = "";
-
-        // Convert total duration into time
         int hours = (int)( milliseconds / (1000*60*60));
         int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
         int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);

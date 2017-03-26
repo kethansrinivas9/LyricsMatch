@@ -2,12 +2,16 @@ package com.kitspl.kh2139.lyricsmusic;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestPermissions(){
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        1);
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                1);
     }
 
     @Override
@@ -51,13 +55,17 @@ public class MainActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted now fetch the data from the storage
-                    Toast.makeText(MainActivity.this, "External storage Read Permission granted", Toast.LENGTH_SHORT).show();
                     lv = (ListView) findViewById(R.id.playList);
-                    final ArrayList<File> mySongs = findSongs(Environment.getExternalStorageDirectory());
+                    final ArrayList<String> mySongs = findAllSongs();
+                    // final ArrayList<File> mySongsOnDevice = findSongs(Environment.getExternalStorageDirectory());
                     final String[] songNames = new String[mySongs.size()];
                     for (int i = 0; i < mySongs.size(); i++) {
-                        songNames[i] = mySongs.get(i).getName().replace(".mp3", "");
+                        songNames[i] = mySongs.get(i).replace(".mp3","");
                     }
+                    /*for (int i = 0; i < mySongs.size(); i++) {
+                        songNames[i] = mySongs.get(i).getName().replace(".mp3", "");
+                    }*/
+
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.song_layout, R.id.songName, songNames);
                     lv.setAdapter(arrayAdapter);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), MusicPlayer.class).putExtra("pos", position).putExtra("songlist", mySongs));
                         }
                     });
+
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
@@ -81,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.print(files.length);
         for(File singleFile: files){
             if(singleFile.isDirectory() && !singleFile.isHidden()){
-                    fileList.addAll(findSongs(singleFile));
+                fileList.addAll(findSongs(singleFile));
             }
             else{
                 if(singleFile.getName().endsWith(".mp3"))
@@ -89,5 +98,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return fileList;
+    }
+
+    public ArrayList<String> findAllSongs(){
+        ContentResolver cr = this.getContentResolver();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+        Cursor cur = cr.query(uri, null, selection, null, sortOrder);
+        ArrayList<String> songList = new ArrayList<>();
+        int count = 0;
+        if(cur != null)
+        {
+            count = cur.getCount();
+            Toast.makeText(MainActivity.this,String.valueOf(count),Toast.LENGTH_SHORT);
+            if(count > 0)
+            {
+                while(cur.moveToNext())
+                {
+                    String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    songList.add(data);
+                }
+            }
+        }
+        cur.close();
+        return songList;
     }
 }
