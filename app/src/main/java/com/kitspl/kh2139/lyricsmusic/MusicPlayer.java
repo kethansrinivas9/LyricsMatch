@@ -1,8 +1,11 @@
 package com.kitspl.kh2139.lyricsmusic;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +28,8 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
     Button playPause,fastBackward,fastForward,nextButton, prevButton;
     private static final String TAG = "MainActivity";
     TextView currentTime,totalTime;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,8 +62,9 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         position = bundle.getInt("pos",0);
 
         //Uri uri = Uri.parse("content:/"+songNames.get(position)+".mp3");
-        Toast.makeText(getApplicationContext(),songNames.get(position).toString(), Toast.LENGTH_SHORT).show();
-        Uri uri = Uri.parse(songNames.get(position));
+
+        ArrayList<String> allSongsUri = findAllSongsUri();
+        Uri uri = Uri.parse(allSongsUri.get(position));
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
         mediaPlayer.start();
         updateSeekBar.start();
@@ -147,6 +153,11 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         };
     }
 
+    /**
+     * Method to get the time in minutes format to display song status
+     * @param milliseconds
+     * @return
+     */
     public String milliSecondsToTime(long milliseconds){
         String finalTimerString = "";
         String secondsString = "";
@@ -166,5 +177,34 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         finalTimerString = finalTimerString + minutes + ":" + secondsString;
 
         return finalTimerString;
+    }
+
+    /**
+     * Method to return all Songs Uri to get the file path
+     * @return arraylist of Uri
+     */
+    public ArrayList<String> findAllSongsUri(){
+        ContentResolver cr = this.getContentResolver();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
+        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
+        Cursor cur = cr.query(uri, null, selection, null, sortOrder);
+        ArrayList<String> songList = new ArrayList<>();
+        int count = 0;
+        if(cur != null)
+        {
+            count = cur.getCount();
+            //Toast.makeText(MainActivity.this,String.valueOf(count),Toast.LENGTH_SHORT);
+            if(count > 0)
+            {
+                while(cur.moveToNext())
+                {
+                    String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    songList.add(data);
+                }
+            }
+        }
+        cur.close();
+        return songList;
     }
 }

@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
                     /*for (int i = 0; i < mySongs.size(); i++) {
                         songNames[i] = mySongs.get(i).getName().replace(".mp3", "");
                     }*/
-
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.song_layout, R.id.songName, songNames);
                     lv.setAdapter(arrayAdapter);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 while(cur.moveToNext())
                 {
-                    String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
+                    String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
                     songList.add(data);
                 }
             }
