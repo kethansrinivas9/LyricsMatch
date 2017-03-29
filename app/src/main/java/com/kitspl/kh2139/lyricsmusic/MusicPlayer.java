@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,10 +62,17 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         songNames = (ArrayList) bundle.getParcelableArrayList("songlist");
         position = bundle.getInt("pos",0);
 
-        //Uri uri = Uri.parse("content:/"+songNames.get(position)+".mp3");
-
+        Uri uri;
         ArrayList<String> allSongsUri = findAllSongsUri();
-        Uri uri = Uri.parse(allSongsUri.get(position));
+        ArrayList<File> allDeviceSongs = findSongsOnDevice(Environment.getExternalStorageDirectory());
+        //Toast.makeText(getApplicationContext(),position,Toast.LENGTH_LONG);
+
+        if(position < allSongsUri.size())
+            uri = Uri.parse(allSongsUri.get(position));
+        else {
+            position -= allSongsUri.size();
+            uri = Uri.parse(allDeviceSongs.get(position).toString());
+        }
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
         mediaPlayer.start();
         updateSeekBar.start();
@@ -194,7 +202,6 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         if(cur != null)
         {
             count = cur.getCount();
-            //Toast.makeText(MainActivity.this,String.valueOf(count),Toast.LENGTH_SHORT);
             if(count > 0)
             {
                 while(cur.moveToNext())
@@ -206,5 +213,28 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         }
         cur.close();
         return songList;
+    }
+
+
+    /**
+     * method to get the song files on a device
+     * @param storageDirectory
+     * @return
+     */
+    public ArrayList<File> findSongsOnDevice(File storageDirectory){
+        ArrayList<File> fileList = new ArrayList<>();
+        File[] files = storageDirectory.listFiles();
+        System.out.print("file lenght:");
+        System.out.print(files.length);
+        for(File singleFile: files){
+            if(singleFile.isDirectory() && !singleFile.isHidden()){
+                fileList.addAll(findSongsOnDevice(singleFile));
+            }
+            else{
+                if(singleFile.getName().endsWith(".mp3"))
+                    fileList.add(singleFile);
+            }
+        }
+        return fileList;
     }
 }

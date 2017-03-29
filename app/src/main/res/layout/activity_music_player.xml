@@ -14,7 +14,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="1">
 
         <SeekBar
             android:layout_width="match_parent"
@@ -45,13 +46,15 @@
                 android:paddingLeft="236dp"
                 android:layout_weight="1" />
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="83dp"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@+id/seekBar"
             android:paddingLeft="4dp"
-            android:layout_marginBottom="@dimen/activity_vertical_margin">
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_weight="0.03">
 
         <Button
             android:layout_width="50dp"
