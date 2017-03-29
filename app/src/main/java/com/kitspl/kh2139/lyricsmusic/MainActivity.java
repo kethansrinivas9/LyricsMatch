@@ -57,14 +57,17 @@ public class MainActivity extends AppCompatActivity {
                     // permission was granted now fetch the data from the storage
                     lv = (ListView) findViewById(R.id.playList);
                     final ArrayList<String> mySongs = findAllSongs();
-                    // final ArrayList<File> mySongsOnDevice = findSongs(Environment.getExternalStorageDirectory());
-                    final String[] songNames = new String[mySongs.size()];
+                    final ArrayList<File> mySongsOnDevice = findSongsOnDevice(Environment.getExternalStorageDirectory());
+                    int songsCount = mySongs.size()+mySongsOnDevice.size();
+                    final String[] songNames = new String[songsCount];
                     for (int i = 0; i < mySongs.size(); i++) {
                         songNames[i] = mySongs.get(i).replace(".mp3","");
                     }
-                    /*for (int i = 0; i < mySongs.size(); i++) {
-                        songNames[i] = mySongs.get(i).getName().replace(".mp3", "");
-                    }*/
+                    int j = mySongs.size();
+                    for (int i = 0; i < mySongsOnDevice.size(); i++) {
+                        songNames[j++] = mySongsOnDevice.get(i).getName().replace(".mp3", "");
+                        Toast.makeText(MainActivity.this,songNames[j-1],Toast.LENGTH_SHORT).show();
+                    }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.song_layout, R.id.songName, songNames);
                     lv.setAdapter(arrayAdapter);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -82,14 +85,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public ArrayList<File> findSongs(File storageDirectory){
+    public ArrayList<File> findSongsOnDevice(File storageDirectory){
         ArrayList<File> fileList = new ArrayList<>();
         File[] files = storageDirectory.listFiles();
         System.out.print("file lenght:");
         System.out.print(files.length);
         for(File singleFile: files){
             if(singleFile.isDirectory() && !singleFile.isHidden()){
-                fileList.addAll(findSongs(singleFile));
+                fileList.addAll(findSongsOnDevice(singleFile));
             }
             else{
                 if(singleFile.getName().endsWith(".mp3"))
