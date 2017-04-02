@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                     int j = mySongs.size();
                     for (int i = 0; i < mySongsOnDevice.size(); i++) {
                         songNames[j++] = mySongsOnDevice.get(i).getName().replace(".mp3", "");
-                        Toast.makeText(MainActivity.this,songNames[j-1],Toast.LENGTH_SHORT).show();
                     }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.song_layout, R.id.songName, songNames);
                     lv.setAdapter(arrayAdapter);
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         if(cur != null)
         {
             count = cur.getCount();
-            Toast.makeText(MainActivity.this,String.valueOf(count),Toast.LENGTH_SHORT);
             if(count > 0)
             {
                 while(cur.moveToNext())
