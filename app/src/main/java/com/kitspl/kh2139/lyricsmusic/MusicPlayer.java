@@ -3,6 +3,8 @@ package com.kitspl.kh2139.lyricsmusic;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
@@ -140,6 +142,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
 
     public void changeSeekBarPosition(){
         seekBar = (SeekBar)findViewById(R.id.seekBar);
+        seekBar.getProgressDrawable().setColorFilter(Color.parseColor("#FFA500"), PorterDuff.Mode.SRC_IN);
         updateSeekBar = new Thread(){
             @Override
             public void run() {
