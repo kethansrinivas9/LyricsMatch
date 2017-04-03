@@ -115,6 +115,8 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(++position);
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
+                int totalDuration = mediaPlayer.getDuration();
+                totalTime.setText(milliSecondsToTime(totalDuration));
                 mediaPlayer.start();
                 break;
             case R.id.prevButton:
@@ -122,6 +124,8 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(--position);
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
+                totalDuration = mediaPlayer.getDuration();
+                totalTime.setText(milliSecondsToTime(totalDuration));
                 mediaPlayer.start();
                 break;
         }
