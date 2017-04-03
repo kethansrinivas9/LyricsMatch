@@ -92,6 +92,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         int option = view.getId();
+        Uri uri;
         switch (option){
             case R.id.playPause:
                 if(mediaPlayer.isPlaying()) {
@@ -112,14 +113,14 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
             case R.id.nextButton:
                 mediaPlayer.stop();
                 mediaPlayer.release();
-                Uri uri = getUriBasedOnSongNumber(position++);
+                uri = getUriBasedOnSongNumber(++position);
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
                 break;
             case R.id.prevButton:
                 mediaPlayer.stop();
                 mediaPlayer.release();
-                uri = getUriBasedOnSongNumber(position--);
+                uri = getUriBasedOnSongNumber(--position);
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
                 break;
