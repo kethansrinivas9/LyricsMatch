@@ -59,27 +59,26 @@ public class MainActivity extends AppCompatActivity {
                     final ArrayList<String> mySongs = findAllSongs();
                     final ArrayList<File> mySongsOnDevice = findSongsOnDevice(Environment.getExternalStorageDirectory());
                     int songsCount = mySongs.size()+mySongsOnDevice.size();
-                    final String[] songNames = new String[songsCount];
+                    final ArrayList<String> songNames = new ArrayList<>(); /* = new String[songsCount];*/
                     for (int i = 0; i < mySongs.size(); i++) {
-                        songNames[i] = mySongs.get(i).replace(".mp3","");
+                        songNames.add(mySongs.get(i).replace(".mp3",""));
                     }
-                    int j = mySongs.size();
+                    //int j = mySongs.size();
                     for (int i = 0; i < mySongsOnDevice.size(); i++) {
-                        songNames[j++] = mySongsOnDevice.get(i).getName().replace(".mp3", "");
+                        songNames.add(mySongsOnDevice.get(i).getName().replace(".mp3", ""));
                     }
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.song_layout, R.id.songName, songNames);
                     lv.setAdapter(arrayAdapter);
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            startActivity(new Intent(getApplicationContext(), MusicPlayer.class).putExtra("pos", position).putExtra("songlist", mySongs));
+                            startActivity(new Intent(getApplicationContext(), MusicPlayer.class).putExtra("pos", position).putExtra("songlist", mySongs).putExtra("songNames",songNames));
                         }
                     });
 
                 } else {
                     Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
-                return;
             }
         }
     }

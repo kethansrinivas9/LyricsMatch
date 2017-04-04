@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
     static MediaPlayer mediaPlayer;
-    //ArrayList<File> songNames;
     ArrayList<String> songNames;
     int position;
     SeekBar seekBar;
@@ -37,6 +36,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
+
 
         playPause = (Button)findViewById(R.id.playPause);
         fastBackward = (Button)findViewById(R.id.fastBackward);
@@ -61,7 +61,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        songNames = (ArrayList) bundle.getParcelableArrayList("songlist");
+        songNames = (ArrayList) bundle.getParcelableArrayList("songNames");
         position = bundle.getInt("pos",0);
 
         Uri uri;
@@ -69,7 +69,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
         mediaPlayer.start();
         updateSeekBar.start();
-
+        setTitle(songNames.get(position));
         seekBar.setMax(mediaPlayer.getDuration());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -114,6 +114,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(++position);
+                setTitle(songNames.get(position));
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 int totalDuration = mediaPlayer.getDuration();
                 totalTime.setText(milliSecondsToTime(totalDuration));
@@ -123,6 +124,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(--position);
+                setTitle(songNames.get(position));
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 totalDuration = mediaPlayer.getDuration();
                 totalTime.setText(milliSecondsToTime(totalDuration));
