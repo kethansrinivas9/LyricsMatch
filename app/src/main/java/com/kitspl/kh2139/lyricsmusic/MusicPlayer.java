@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
     static MediaPlayer mediaPlayer;
     ArrayList<String> songNames;
-    int position;
+    static int position;
     SeekBar seekBar;
     Thread updateSeekBar;
     Button playPause,fastBackward,fastForward,nextButton, prevButton;
@@ -114,6 +114,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(++position);
+                position = getPosition(position);
                 setTitle(songNames.get(position));
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 int totalDuration = mediaPlayer.getDuration();
@@ -124,6 +125,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
                 mediaPlayer.stop();
                 mediaPlayer.release();
                 uri = getUriBasedOnSongNumber(--position);
+                position = getPosition(position);
                 setTitle(songNames.get(position));
                 mediaPlayer = MediaPlayer.create(getApplicationContext(),uri);
                 totalDuration = mediaPlayer.getDuration();
@@ -137,9 +139,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
         Uri uri;
         ArrayList<String> allSongsUri = findAllSongsUri();
         ArrayList<File> allDeviceSongs = findSongsOnDevice(Environment.getExternalStorageDirectory());
-        position = (position)%(allSongsUri.size()+allDeviceSongs.size());
-        if(position<0)
-            position = allSongsUri.size()+allDeviceSongs.size()-1;
+        position = getPosition(position);
         if(position < allSongsUri.size())
             uri = Uri.parse(allSongsUri.get(position));
         else {
@@ -147,6 +147,15 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
             uri = Uri.parse(allDeviceSongs.get(position).toString());
         }
         return uri;
+    }
+
+    public int getPosition(int position){
+        ArrayList<String> allSongsUri = findAllSongsUri();
+        ArrayList<File> allDeviceSongs = findSongsOnDevice(Environment.getExternalStorageDirectory());
+        position = (position)%(allSongsUri.size()+allDeviceSongs.size());
+        if(position<0)
+            position = allSongsUri.size()+allDeviceSongs.size()-1;
+        return position;
     }
 
     public void changeSeekBarPosition(){
