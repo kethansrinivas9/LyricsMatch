@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class MusicPlayer extends AppCompatActivity implements View.OnClickListener{
     static MediaPlayer mediaPlayer;
     ArrayList<String> songNames;
-    static int position;
+    int position;
     SeekBar seekBar;
     Thread updateSeekBar;
     Button playPause,fastBackward,fastForward,nextButton, prevButton;
