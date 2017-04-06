@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < mySongs.size(); i++) {
                         songNames.add(mySongs.get(i).replace(".mp3",""));
                     }
-                    //int j = mySongs.size();
+                    
                     for (int i = 0; i < mySongsOnDevice.size(); i++) {
                         songNames.add(mySongsOnDevice.get(i).getName().replace(".mp3", ""));
                     }
