@@ -1,4 +1,4 @@
-# Rudimentary Version of a Music Application with the below features
+## Rudimentary Version of a Music Application with the below features
 * Play the song
 * Pause the song
 * Play next song
